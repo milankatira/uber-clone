@@ -9,9 +9,9 @@ const {Pickup,Dropoff}=router.query;
 console.log(Pickup)
   const [pickupCoordinates, setPickupCoordinates] = useState();
   const [dropoffCoordinates, setDropoffCoordinates] = useState();
-
+console.log(Pickup,Dropoff)
   const getPickUpCoordinatets = () => {
-    const Pickup = "Santa Monica";
+     const Pickup = "Santa Monica";
 
     fetch(
       `https://api.mapbox.com/geocoding/v5/mapbox.places/${Pickup}.json?` +
