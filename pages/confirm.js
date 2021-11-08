@@ -1,59 +1,60 @@
 import React, { useEffect, useState } from "react";
 import tw from "tailwind-styled-components";
 import Map from "./components/Map";
+import RideSelector from "./components/RideSelector";
 import { useRouter } from "next/router";
 
 const Confirm = () => {
-const router=useRouter()
-const {Pickup,Dropoff}=router.query;
-console.log(Pickup)
-  const [pickupCoordinates, setPickupCoordinates] = useState();
-  const [dropoffCoordinates, setDropoffCoordinates] = useState();
-console.log(Pickup,Dropoff)
-  const getPickUpCoordinatets = () => {
-     const Pickup = "Santa Monica";
+  const router = useRouter()
+  const { pickup, dropoff } = router.query
+  const [ pickupCoordinates, setPickupCoordinates ] = useState()
+  const [ dropoffCoordinates, setDropoffCoordinates ] = useState()
 
-    fetch(
-      `https://api.mapbox.com/geocoding/v5/mapbox.places/${Pickup}.json?` +
+  const getPickupCoordinates = (pickup) => {
+    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${pickup}.json?` + 
         new URLSearchParams({
-          access_token:
-            "pk.eyJ1IjoibWlsYW4yNiIsImEiOiJja3ZseGkyaDAza2NyMnBwZzl4ODA3OHd4In0.-lfouQWvFtyCJdDxA4B35g",
-          limit: 1,
+            access_token: "pk.eyJ1IjoiZHJha29zaSIsImEiOiJja2x1YW9jdWswOHcyMnVvZXQ1aTVqcHBnIn0.G0SLu_zwAEU9_q8FIkHeaQ",
+            limit: 1
         })
     )
-      .then((response) => response.json())
-      .then((data) => {
+    .then(response => response.json())
+    .then(data => {
         setPickupCoordinates(data.features[0].center);
-      });
-  };
+    })
+}
 
-  const getDropOffCoordinatets = () => {
-    const Dropoff = "Los Angeles";
-
-    fetch(
-      `https://api.mapbox.com/geocoding/v5/mapbox.places/${Dropoff}.json?` +
+const getDropoffCoordinates = (dropoff) => {
+    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${dropoff}.json?` + 
         new URLSearchParams({
-          access_token:
-            "pk.eyJ1IjoibWlsYW4yNiIsImEiOiJja3ZseGkyaDAza2NyMnBwZzl4ODA3OHd4In0.-lfouQWvFtyCJdDxA4B35g",
-          limit: 1,
+            access_token: "pk.eyJ1IjoiZHJha29zaSIsImEiOiJja2x1YW9jdWswOHcyMnVvZXQ1aTVqcHBnIn0.G0SLu_zwAEU9_q8FIkHeaQ",
+            limit: 1
         })
     )
-      .then((response) => response.json())
-      .then((data) => {
-        setDropoffCoordinates(data.features[0].center);
-      });
-  };
-  useEffect(() => {
-    getPickUpCoordinatets();
-    getDropOffCoordinatets();
-  }, []);
+    .then(response => response.json())
+    .then(data => {
+
+        setDropoffCoordinates(data.features[0].center)
+    })
+}
+
+useEffect(()=>{
+    getPickupCoordinates(pickup);
+    getDropoffCoordinates(dropoff);
+}, [pickup, dropoff])
   return (
     <Wrapper>
       <Map
         pickupCoordinates={pickupCoordinates}
         dropoffCoordinates={dropoffCoordinates}
       />
-      <RideContainer>ride selector confirm button</RideContainer>
+      <RideContainer>
+                <RideSelector />
+                <ConfirmButtonContainer>
+                    <ConfirmButton>
+                        Confirm UberX
+                    </ConfirmButton>
+                </ConfirmButtonContainer>
+            </RideContainer>
     </Wrapper>
   );
 };
@@ -64,6 +65,12 @@ const Wrapper = tw.div`
 flex h-screen flex-col
 `;
 
+const ConfirmButton = tw.div`
+bg-black text-white my-4 mx-4 py-4 text-center text-xl
+`
+const ConfirmButtonContainer = tw.div`
+border-t-2
+`
 const RideContainer = tw.div`
-flex-1
-`;
+flex-1 flex flex-col h-1/2
+`
